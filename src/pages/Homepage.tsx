@@ -1,34 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
+"use clients"
+import { useNavigate } from "react-router-dom";
 import { useGetAllJobsQuery } from "../redux/api/jobApi";
+import { logout } from "../utils/logout";
 
-// Job data
-const jobs = [
-  {
-    title: "First Job Post",
-    description: "First Job Post description, update",
-    created_by: 1,
-    created_at: "2025-01-05T17:40:37.190392Z",
-  },
-  {
-    title: "First Job Post",
-    description: "First Job Post description",
-    created_by: 1,
-    created_at: "2025-01-05T17:41:40.200179Z",
-  },
-  {
-    title: "3rd Job Post",
-    description: "3rd Job Post description",
-    created_by: 2,
-    created_at: "2025-01-05T19:07:42.751902Z",
-  },
-  {
-    title: "4th Job Post",
-    description: "4th Job Post description",
-    created_by: 1,
-    created_at: "2025-01-05T19:08:56.681328Z",
-  },
-];
 
 const formatDate = (dateString: string) => {
   const options: Intl.DateTimeFormatOptions = {
@@ -39,66 +14,82 @@ const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString(undefined, options);
 };
 
-const JobCard = ({ job }: { job: any }) => (
-  <div className="bg-white rounded-lg shadow-md overflow-hidden">
-    <div className="p-6">
-      <h3 className="font-bold text-xl mb-2">{job.title}</h3>
-      <p className="text-gray-600 mb-4">{job.description}</p>
-      <div className="flex justify-between items-center text-sm text-gray-500">
-        <span>Created by: User {job.created_by}</span>
-        <span>{formatDate(job.created_at)}</span>
-      </div>
-    </div>
-  </div>
-);
+const JobCard = ({ job }: { job: any }) => {
+
+    console.log(job)
+    return (
+        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="p-6">
+            <h3 className="font-bold text-xl mb-2">{job.title}</h3>
+            <p className="text-gray-600 mb-4">{job.description}</p>
+            <div className="flex justify-between items-center text-sm text-gray-500">
+              <span>Created by: User {job.created_by}</span>
+              <span>{formatDate(job.created_at)}</span>
+            </div>
+          </div>
+        </div>
+      );
+}
 
 const JobList = () => {
+    const { data:jobs} = useGetAllJobsQuery({});
 
-    const {data:jobData}= useGetAllJobsQuery({})
-    console.log(jobData)
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Job Listings</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {jobs.map((job, index) => (
-          <JobCard key={index} job={job} />
-        ))}
+  
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-8">Job Listings</h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {jobs?.map((job: any, index: number) =>{
+            return <JobCard key={index} job={job} />;
+          })}
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
+  
 
-const Header = () => (
-  <header className="bg-blue-600 text-white shadow-md">
-    <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-      <h1 className="text-2xl font-bold">JobBoard</h1>
-      <nav>
-        <ul className="flex space-x-4">
-          <li>
-            <a href="#" className="hover:text-blue-200">
-              Home
-            </a>
-          </li>
-          <li>
-            <a href="#" className="hover:text-blue-200">
-              Post a Job
-            </a>
-          </li>
-          <li>
-            <a href="#" className="hover:text-blue-200">
-              About
-            </a>
-          </li>
-          <li>
-            <a href="#" className="hover:text-blue-200">
-              Contact
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
-  </header>
-);
+const Header = () => {
+
+  const navigate = useNavigate()
+  return (
+    <header className="bg-blue-600 text-white shadow-md">
+      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+        <h1 className="text-2xl font-bold">JobBoard</h1>
+        <nav>
+          <ul className="flex space-x-4">
+            <li>
+              <a href="#" className="hover:text-blue-200">
+                Home
+              </a>
+            </li>
+            <li>
+              <a href="#" className="hover:text-blue-200">
+                Post a Job
+              </a>
+            </li>
+            <li>
+              <a href="#" className="hover:text-blue-200">
+                About
+              </a>
+            </li>
+            <li>
+              <a href="#" className="hover:text-blue-200">
+                Contact
+              </a>
+            </li>
+            <li>
+              <button onClick={()=>{
+                logout()
+                navigate("/login")
+              }}>Log out</button>
+            </li>
+          </ul>
+        </nav>
+  
+      </div>
+    </header>
+  )
+};
 
 const Footer = () => (
   <footer className="bg-gray-100 mt-12">

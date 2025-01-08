@@ -7,16 +7,17 @@ import {
     fetchBaseQuery
 } from '@reduxjs/toolkit/query/react';
 // import { RootState } from '../store';
+import Cookies from 'js-cookie';
 
 const baseQuery = fetchBaseQuery({
-    baseUrl: 'https://interview.pencilwoodbd.org/api',
+    baseUrl: '/api',
     // credentials: 'include',
     prepareHeaders: (headers,) => {
-        // // const token = (getState() as RootState).auth.access_token;
+        const token = Cookies.get('access_token');
 
-        // if (token) {
-        //     headers.set('authorization', `Bearer ${token}`);
-        // }
+        if (token) {
+            headers.set('authorization', `${token}`);
+        }
 
         return headers;
     }
@@ -39,23 +40,24 @@ const baseQueryWithRefreshToken: BaseQueryFn<
         console.log('Sending refresh token');
 
         const res = await fetch(
-            'https://interview.pencilwoodbd.org/api/auth/refresh/',
+            '/api/auth/refresh/',
             {
-                method: 'POST',
+                method: 'post',
                 credentials: 'include',
                 body: JSON.stringify({
-                    // refresh_token: (api.getState() as RootState).auth.refresh_token
+                    refresh: Cookies.get("refresh_token")
                 })
             }
         );
 
+       
+
         const data = await res.json();
 
-        if (data?.access_token) {
-            // const user = (api.getState() as RootState).auth.user;
+        console.log(data)
 
-            // if new token generate then save this token for future use
-            // api.dispatch(logOutUser());
+        if (data?.access) {
+            Cookies.set("access_token", data?.access, { expires: 1, path: "/" });
 
             result = await baseQuery(args, api, extraOptions);
         } else {

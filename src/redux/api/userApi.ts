@@ -21,13 +21,23 @@ const userApi = baseApi.injectEndpoints({
           };
         },
       }),
+    varifyToken: builder.mutation({
+        query: (data) => {
+          return {
+            url: '/auth/verify/',
+            method: 'post',
+            body: data
+          };
+        },
+      }),
 
   })
 });
 
 export const {
     useLoginMutation,
-    useRegisterMutation
+    useRegisterMutation,
+    useVarifyTokenMutation
 } = userApi;
 
 export default userApi;

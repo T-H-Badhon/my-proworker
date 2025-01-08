@@ -1,17 +1,45 @@
-import { useState, FormEvent } from 'react'
-import { Link } from 'react-router-dom'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState, FormEvent } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useLoginMutation } from "../redux/api/userApi";
+import { toast } from "sonner";
+import Cookies from "js-cookie";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const nagivate = useNavigate();
 
-    console.log('Login attempted with:', { email, password })
+  const [login] = useLoginMutation();
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    console.log("Login attempted with:", { email, password });
+
+    const res = await login({ email, password });
+
+    if (res?.data) {
+      toast.success("Login successful");
+
+      const { access, refresh } = res.data;
+      Cookies.set("access_token", access, { expires: 1, path: "/" });
+      Cookies.set("refresh_token", refresh, { expires: 1, path: "/" });
+
+      sessionStorage.setItem('userData', JSON.stringify({name: "user", role:"admin"}))
 
 
-  }
+
+      nagivate("/")
+      e.currentTarget.reset();
+      setEmail("");
+      setPassword("");
+    } else {
+      const err = res?.error as any;
+      toast.error(err?.data ? err?.data?.detail : "Login Failed!");
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50  px-4 sm:px-6 lg:px-8">
@@ -21,8 +49,11 @@ export default function LoginPage() {
             Login to your account
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
-            <Link to="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
+            Or{" "}
+            <Link
+              to="/register"
+              className="font-medium text-indigo-600 hover:text-indigo-500"
+            >
               create a new account
             </Link>
           </p>
@@ -64,26 +95,6 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember-me"
-                name="remember-me"
-                type="checkbox"
-                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-              />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                Remember me
-              </label>
-            </div>
-
-            <div className="text-sm">
-              <Link to="/forgot-password" className="font-medium text-indigo-600 hover:text-indigo-500">
-                Forgot your password?
-              </Link>
-            </div>
-          </div>
-
           <div>
             <button
               type="submit"
@@ -95,6 +106,5 @@ export default function LoginPage() {
         </form>
       </div>
     </div>
-  )
+  );
 }
-

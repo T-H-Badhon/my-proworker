@@ -1,15 +1,37 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, FormEvent } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useRegisterMutation } from '../redux/api/userApi'
+import { toast } from 'sonner'
 
 export default function RegisterPage() {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const navigate = useNavigate()
+
+  const [register] = useRegisterMutation()
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    // Handle registration logic here
-    console.log('Registration attempted with:', { username, email, password })
+    
+    const res = await register({ username, email, password,role:"admin" })
+
+    if(res?.data){
+        toast.success('Registration successful')
+        navigate("/login")
+        e.currentTarget.reset()
+        setEmail('')
+        setPassword('')
+        setUsername('')
+  
+    }
+    else{
+        const err= res?.error as any
+        toast.error(err?.data?.username ? err?.data?.username[0] : err?.data?.email ? err?.data?.email[0] : " Registration Failed!" )
+    }
+
   }
 
   return (
@@ -28,7 +50,7 @@ export default function RegisterPage() {
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <input type="hidden" name="remember" defaultValue="true" />
-          <div className="rounded-md shadow-sm -space-y-px">
+          <div className="rounded-md shadow-sm space-y-3">
             <div>
               <label htmlFor="username" className="sr-only">
                 Username

@@ -8,7 +8,7 @@ const Routes = createBrowserRouter([
   {
     path: "/",
     element: (
-      <ProtectedRoute allowType={["board", "purchase", "sale"]}>
+      <ProtectedRoute allowType={["admin"]}>
        <Homepage/>
       </ProtectedRoute>
     ),
