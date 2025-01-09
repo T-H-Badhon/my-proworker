@@ -10,7 +10,7 @@ import {
 import Cookies from 'js-cookie';
 
 const baseQuery = fetchBaseQuery({
-    baseUrl: '/api',
+    baseUrl: 'https://myproworker-server.vercel.app/api',
     // credentials: 'include',
     prepareHeaders: (headers,) => {
         const token = Cookies.get('access_token');

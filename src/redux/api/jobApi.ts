@@ -6,7 +6,7 @@ const jobApi = baseApi.injectEndpoints({
     getAllJobs: builder.query({
         query: () => {
           return {
-            url: '/job',
+            url: '/jobs',
             method: 'get',
           };
         },

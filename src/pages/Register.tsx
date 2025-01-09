@@ -18,18 +18,20 @@ export default function RegisterPage() {
     
     const res = await register({ username, email, password,role:"admin" })
 
-    if(res?.data){
+    console.log(res)
+
+    if(res?.data?.id){
         toast.success('Registration successful')
         navigate("/login")
-        e.currentTarget.reset()
         setEmail('')
         setPassword('')
         setUsername('')
   
     }
     else{
-        const err= res?.error as any
-        toast.error(err?.data?.username ? err?.data?.username[0] : err?.data?.email ? err?.data?.email[0] : " Registration Failed!" )
+        const err= res?.data as any
+
+        toast.error(err?.username ? err?.username[0] : err?.email ? err?.email[0] : " Registration Failed!" )
     }
 
   }

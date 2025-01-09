@@ -20,7 +20,9 @@ export default function LoginPage() {
 
     const res = await login({ email, password });
 
-    if (res?.data) {
+    console.log(res)
+
+    if (res?.data?.access) {
       toast.success("Login successful");
 
       const { access, refresh } = res.data;
@@ -32,12 +34,12 @@ export default function LoginPage() {
 
 
       nagivate("/")
-      e.currentTarget.reset();
       setEmail("");
       setPassword("");
     } else {
-      const err = res?.error as any;
-      toast.error(err?.data ? err?.data?.detail : "Login Failed!");
+      const err = res?.data as any;
+      console.log(err)
+      toast.error(err ? err?.detail : "Login Failed!");
     }
   };
 
