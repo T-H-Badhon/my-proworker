@@ -40,7 +40,7 @@ const baseQueryWithRefreshToken: BaseQueryFn<
         console.log('Sending refresh token');
 
         const res = await fetch(
-            '/api/auth/refresh/',
+            'https://myproworker-server.vercel.app/api/refresh/',
             {
                 method: 'post',
                 credentials: 'include',
