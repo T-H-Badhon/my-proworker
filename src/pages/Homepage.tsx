@@ -58,22 +58,22 @@ const Header = () => {
         <nav>
           <ul className="flex space-x-4">
             <li>
-              <a href="#" className="hover:text-blue-200">
+              <a href="#" className="hover:text-blue-200 hidden md:block">
                 Home
               </a>
             </li>
             <li>
-              <a href="#" className="hover:text-blue-200">
+              <a href="#" className="hover:text-blue-200 hidden md:block">
                 Post a Job
               </a>
             </li>
             <li>
-              <a href="#" className="hover:text-blue-200">
+              <a href="#" className="hover:text-blue-200 hidden md:block">
                 About
               </a>
             </li>
             <li>
-              <a href="#" className="hover:text-blue-200">
+              <a href="#" className="hover:text-blue-200 hidden md:block">
                 Contact
               </a>
             </li>
